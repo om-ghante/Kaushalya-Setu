@@ -1,10 +1,8 @@
-import React from 'react';
-
 const MyMatch = () => {
   return (
-    <div className="bg-white border rounded-lg shadow-sm p-6">
+    <div className="bg-white rounded-sm shadow-sm p-4">
       <h2 className="text-xl font-semibold mb-4">My Matches</h2>
-      <ul className="space-y-4 mb-6">
+      <ul className="space-y-4">
         {[
           {title: 'Team A vs Team B', stats: 'Tomorrow 4:00 PM'},
           {title: 'Team C vs Team D', stats: 'Today 7:30 PM'},
@@ -16,7 +14,6 @@ const MyMatch = () => {
           </li>
         ))}
       </ul>
-      <button className="text-blue-500 font-semibold mb-6">View All Matches ➤️</button>
     </div>
   );
 };

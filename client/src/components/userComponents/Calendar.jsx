@@ -1,8 +1,6 @@
-import React from 'react';
-
 const Calendar = () => {
   return (
-    <div className="bg-white border rounded-lg shadow-sm p-6">
+    <div className="bg-white rounded-sm shadow-sm p-4">
       <h2 className="text-xl font-semibold mb-4">Calendar</h2>
       <div className="mb-6">
         <h3 className="font-semibold mb-2">Upcoming Events</h3>

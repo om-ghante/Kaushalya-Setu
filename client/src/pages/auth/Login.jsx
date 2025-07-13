@@ -8,6 +8,7 @@ import Error from '../../components/notificationalerts/Error';
 import { loginUser } from '../../firebase/authFirebaseOperations';
 import { signInWithGoogle } from '../../firebase/googleAuthOperations';
 import { useAuth } from '../../context/AuthContext';
+import GoogleLogo from '../../assets/GoogleLogo.png'
 
 const Login = ({ onForgot, onSignUp, onClose }) => {
   const [credentials, setCredentials] = useState({
@@ -55,7 +56,7 @@ const Login = ({ onForgot, onSignUp, onClose }) => {
       setTimeout(() => {
         setSuccessMsg('');
         if (onClose) onClose();
-      }, 3000);
+      }, 1000);
     } else {
       setErrorMsg(result.error || 'Google sign-in failed.');
     }
@@ -63,7 +64,6 @@ const Login = ({ onForgot, onSignUp, onClose }) => {
 
   return (
     <div className="flex flex-col gap-4 w-full max-w-md mx-auto">
-      {/* Success & Error Messages */}
       {successMsg && <SuccessMessage message={successMsg} />}
       {errorMsg && <Error message={errorMsg} />}
 
@@ -93,7 +93,6 @@ const Login = ({ onForgot, onSignUp, onClose }) => {
         </button>
       </div>
 
-      {/* ✅ Login button with onClick */}
       <TextButton
         text="Login"
         onClick={handleLogin}
@@ -120,11 +119,10 @@ const Login = ({ onForgot, onSignUp, onClose }) => {
         <hr className="flex-grow border-gray-300" />
       </div>
 
-      {/* ✅ Google Login Button */}
       <IconTextButton
         icon={
           <img
-            src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+              src={GoogleLogo}
             alt="G"
             className="w-5 h-5"
           />

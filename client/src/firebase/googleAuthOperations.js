@@ -1,4 +1,3 @@
-// firebase/googleAuthOperations.js
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
 import { app } from "./config";
@@ -12,11 +11,9 @@ export const signInWithGoogle = async () => {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
-    // Split full name to first and last name if possible
     const displayName = user.displayName || '';
     const [firstName = '', lastName = ''] = displayName.split(' ');
 
-    // Prepare user data in required format
     const userData = {
       uid: user.uid,
       firstName,

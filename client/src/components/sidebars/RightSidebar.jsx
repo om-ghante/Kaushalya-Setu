@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import ColorIconButton from '../buttons/ColorIconButton';
 import { BsXLg, BsPin, BsPinFill } from 'react-icons/bs';
 import { useAuth } from '../../context/AuthContext';
-import Inbox from '../messageComponents/Inbox'; // adjust the path based on your structure
+import Inbox from '../messageComponents/Inbox';
 
 const RightSidebar = ({ isOpen, isPinned, onClose, onTogglePin }) => {
   const sidebarRef = useRef(null);

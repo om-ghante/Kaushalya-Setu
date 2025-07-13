@@ -28,16 +28,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Homepage / Main Dashboard */}
         <Route path="/" element={<Dashboard />} />
-
-        {/* Register Page */}
-        <Route path="/register" element={<Register />} />
-
-        {/* Add more routes here if needed */}
       </Routes>
 
-      {/* Always show the device warning popup */}
       <DeviceWarningPopup />
     </BrowserRouter>
   );

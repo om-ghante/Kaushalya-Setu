@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import IconButton from '../components/buttons/IconButton';
+import ColorIconButton from '../components/buttons/ColorIconButton';
 import IconTextButton from '../components/buttons/IconTextButton';
 import TextButton from '../components/buttons/TextButton';
 import MenuIconList from '../components/list/MenuIconList';
@@ -14,13 +15,13 @@ import ForgotPassword from './auth/ForgotPassword';
 import PostList from '../components/list/PostList';
 import MyMatch from '../components/userComponents/MyMatch';
 import Calendar from '../components/userComponents/Calendar';
-import { BsInfoCircle, BsGear, BsLayoutSidebar, BsX, BsPin, BsPinFill } from 'react-icons/bs';
+import CreatePostPopup from './CreatePostPopup';
+import { BsInfoCircle, BsGear, BsChatDots, BsX, BsBell, BsPlusCircle, BsSearch } from 'react-icons/bs';
 import { CgMenuGridO } from 'react-icons/cg';
 import iconListData from '../content/iconListData';
 import { useAuth } from '../context/AuthContext';
 
 const Dashboard = () => {
-  // Existing state
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [columns, setColumns] = useState(1);
   const [isHowItWorksOpen, setIsHowItWorksOpen] = useState(false);
@@ -28,25 +29,48 @@ const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarPinned, setIsSidebarPinned] = useState(false);
   const [isDocsVisible, setIsDocsVisible] = useState(true);
-  const menuRef = useRef(null);
-  const docsButtonRef = useRef(null);
+  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
+  const [isNotificationMenuOpen, setIsNotificationMenuOpen] = useState(false);
 
-  // Auth state
-  const { user } = useAuth();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState('');
+
+  const handleSearch = (e) => {
+    e?.preventDefault?.();
+    if (searchQuery.trim() !== '') {
+      setSearchResults(searchQuery);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch(e);
+    }
+  };
+
+  const clearSearch = () => {
+    setSearchQuery('');
+    setSearchResults('');
+  };
+
+  const menuRef = useRef(null);
+  const notificationRef = useRef(null);
+
+  const { user, setUser } = useAuth();
   const [authModal, setAuthModal] = useState(null);
 
   useEffect(() => {
-
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setIsMenuOpen(false);
       }
+      if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+        setIsNotificationMenuOpen(false);
+      }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const login = (userData) => {
@@ -68,32 +92,13 @@ const Dashboard = () => {
     }
   }));
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-    if (!isSidebarOpen) {
-      setIsSidebarPinned(false);
-    }
-  };
-
-  const toggleSidebarPin = () => {
-    setIsSidebarPinned(!isSidebarPinned);
-  };
-
-  const closeDocsButton = () => {
-    setIsDocsVisible(false);
-  };
-
   return (
     <div className="min-h-screen bg-white relative">
-      {/* Top-left menu button */}
+      {/* Top-left menu */}
       <div className="fixed top-4 left-4 z-30" ref={menuRef}>
         <IconButton
           icon={<CgMenuGridO className="text-xl" />}
-          onClick={toggleMenu}
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
           ariaLabel="Toggle menu"
           bgColor={isMenuOpen ? 'bg-blue-100' : 'bg-gray-200'}
           hoverColor="hover:bg-blue-200"
@@ -106,11 +111,38 @@ const Dashboard = () => {
         )}
       </div>
 
-      {/* Top-right auth buttons (when not logged in) */}
-      {!user && (
-        <div className={`fixed top-4 z-30 flex gap-3 transition-all duration-300 ${
-          isSidebarPinned ? 'right-[calc(25%+1rem)]' : 'right-4'
-        }`}>
+      {/* Search Bar */}
+      <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-30 w-full max-w-md px-4">
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
+            className="w-full px-4 py-2 border rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          <ColorIconButton
+            icon={searchQuery ? <BsX /> : <BsSearch />}
+            onClick={searchQuery ? clearSearch : handleSearch}
+            ariaLabel={searchQuery ? 'Clear' : 'Search'}
+            bgColor="bg-blue-100"
+            hoverColor="hover:bg-blue-200"
+            textColor="text-blue-600"
+          />
+        </div>
+        {searchResults && (
+          <div className="mt-2 p-3 bg-gray-100 border rounded-lg shadow">
+            <p className="text-sm text-gray-700">
+              Results for: <strong>{searchResults}</strong>
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Auth Buttons */}
+      {!user ? (
+        <div className={`fixed top-4 z-30 flex gap-3 transition-all duration-300 ${isSidebarPinned ? 'right-[calc(25%+1rem)]' : 'right-4'}`}>
           <TextButton
             text="Login"
             onClick={() => setAuthModal('login')}
@@ -126,9 +158,35 @@ const Dashboard = () => {
             textColor="text-purple-700"
           />
         </div>
+      ) : (
+        <div className="fixed top-4 right-4 z-30 flex gap-3">
+          <IconButton
+            icon={<BsPlusCircle className="text-xl" />}
+            onClick={() => setIsPostModalOpen(true)}
+            ariaLabel="Add Post"
+            bgColor="bg-green-100"
+            hoverColor="hover:bg-green-200"
+            textColor="text-green-700"
+          />
+          <div ref={notificationRef} className="relative">
+            <IconButton
+              icon={<BsBell className="text-xl" />}
+              onClick={() => setIsNotificationMenuOpen(!isNotificationMenuOpen)}
+              ariaLabel="Notifications"
+              bgColor="bg-yellow-100"
+              hoverColor="hover:bg-yellow-200"
+              textColor="text-yellow-700"
+            />
+            {isNotificationMenuOpen && (
+              <div className="absolute right-0 mt-2 w-64 bg-white shadow-md border rounded-lg p-4">
+                <p className="text-sm font-medium">You have no new notifications.</p>
+              </div>
+            )}
+          </div>
+        </div>
       )}
 
-      {/* Bottom-left buttons */}
+      {/* Bottom Buttons */}
       <div className="fixed bottom-4 left-4 z-30 flex gap-3">
         <IconButton
           icon={<BsInfoCircle className="text-xl" />}
@@ -141,19 +199,17 @@ const Dashboard = () => {
         <IconButton
           icon={<BsGear className="text-xl" />}
           onClick={() => setIsAboutSoftwareOpen(true)}
-          ariaLabel="About this software"
+          ariaLabel="About"
           bgColor="bg-purple-100"
           hoverColor="hover:bg-purple-200"
           textColor="text-purple-600"
         />
       </div>
 
-      {/* Sidebar toggle button */}
-      <div className={`fixed bottom-4 z-50 flex gap-3 transition-all duration-300 ${
-        isSidebarPinned ? 'right-[calc(25%+1rem)]' : 'right-4'
-      }`}>
+      {/* Sidebar Pin/Toggle */}
+      <div className={`fixed bottom-4 z-50 flex gap-3 transition-all duration-300 ${isSidebarPinned ? 'right-[calc(25%+1rem)]' : 'right-4'}`}>
         {(isSidebarPinned || !isSidebarOpen) && isDocsVisible && (
-          <div className="relative" ref={docsButtonRef}>
+          <div className="relative">
             <TextButton 
               text="Docs"
               onClick={() => alert('Documentation opened')}
@@ -162,9 +218,8 @@ const Dashboard = () => {
               textColor="text-green-700"
             />
             <button
-              onClick={closeDocsButton}
-              className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
-              aria-label="Close documentation button"
+              onClick={() => setIsDocsVisible(false)}
+              className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
             >
               <BsX className="text-xs" />
             </button>
@@ -173,9 +228,12 @@ const Dashboard = () => {
 
         {!isSidebarOpen && (
           <IconTextButton
-            icon={<BsLayoutSidebar />}
-            text="Open Tools"
-            onClick={toggleSidebar}
+            icon={<BsChatDots />}
+            text="Open Messages"
+            onClick={() => {
+              setIsSidebarOpen(true);
+              setIsSidebarPinned(false);
+            }}
             bgColor="bg-indigo-100"
             hoverColor="hover:bg-indigo-200"
             textColor="text-indigo-700"
@@ -183,31 +241,33 @@ const Dashboard = () => {
         )}
       </div>
 
-      <div className={`pt-24 px-8 pb-16 transition-all duration-300 ${
-        isSidebarPinned ? 'pr-[25%]' : ''
-      }`}>
+      {/* Main Content */}
+      <div className={`pt-24 px-8 pb-16 transition-all duration-300 ${isSidebarPinned ? 'pr-[25%]' : ''}`}>
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-            {/* Left Column - Small */}
             <div className="lg:col-span-3 space-y-6">
               {user && <Profile user={user} onLogout={logout} />}
             </div>
-
-            {/* Middle Column - Large */}
             <div className="lg:col-span-6 space-y-6">
               <PostList />
             </div>
-                
-            {/* Right Column - Small */}
             <div className="lg:col-span-3 space-y-6">
               <MyMatch />
               <Calendar />
+              <div>
+                  <p className="text-center text-md text-gray-500 mt-8">
+                    Made By Om Ghante with Passion
+                  </p>
+                  <p className="text-center text-sm text-gray-500">
+                    Kaushalya Setu © 2025
+                  </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-
+      {/* Sidebars and Popups */}
       <RightSidebar 
         isOpen={isSidebarOpen} 
         isPinned={isSidebarPinned}
@@ -215,45 +275,34 @@ const Dashboard = () => {
           setIsSidebarOpen(false);
           setIsSidebarPinned(false);
         }}
-        onTogglePin={toggleSidebarPin}
+        onTogglePin={() => setIsSidebarPinned(!isSidebarPinned)}
       />
-      
 
-      {/* Auth Modals */}
       {authModal === 'login' && (
         <PopupModal title="Login" onClose={() => setAuthModal(null)}>
-          <Login 
-            onLogin={login}
-            onForgot={() => setAuthModal('forgot')}
-            onSignUp={() => setAuthModal('register')}
-            onClose={() => setAuthModal(null)} 
-          />
+          <Login onLogin={login} onForgot={() => setAuthModal('forgot')} onSignUp={() => setAuthModal('register')} onClose={() => setAuthModal(null)} />
         </PopupModal>
       )}
-
       {authModal === 'register' && (
         <PopupModal title="Register" onClose={() => setAuthModal(null)}>
-          <Register 
-            onRegister={login}
-            onLogin={() => setAuthModal('login')}
-            onClose={() => setAuthModal(null)} 
-          />
+          <Register onRegister={login} onLogin={() => setAuthModal('login')} onClose={() => setAuthModal(null)} />
         </PopupModal>
       )}
-
       {authModal === 'forgot' && (
         <PopupModal title="Forgot Password" onClose={() => setAuthModal(null)}>
           <ForgotPassword onBackToLogin={() => setAuthModal('login')} />
         </PopupModal>
       )}
-
-      {/* Other modals */}
+      {isPostModalOpen && (
+        <PopupModal title="Add Post" onClose={() => setIsPostModalOpen(false)}>
+          <CreatePostPopup />
+        </PopupModal>
+      )}
       {isHowItWorksOpen && (
         <PopupModal title="How It Works" onClose={() => setIsHowItWorksOpen(false)}>
           <HowItWorksPopup />
         </PopupModal>
       )}
-      
       {isAboutSoftwareOpen && (
         <PopupModal title="About This Software" onClose={() => setIsAboutSoftwareOpen(false)}>
           <AboutSoftwarePopup />

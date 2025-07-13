@@ -7,13 +7,10 @@ const ForgotPassword = ({ onBackToLogin }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Reset password logic (disabled for now)
   };
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-md mx-auto">
-
-      {/* ⚠️ Error Notice */}
       <Error message="Forgot password is currently disabled. Please contact the admin to reset your password." />
 
       <div>

@@ -16,19 +16,16 @@ import {
   getDocs
 } from 'firebase/firestore';
 
-import { app } from './config'; // Firebase app initialization
+import { app } from './config'; 
 
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/**
- * Register user with email & password and store data in Firestore
- */
 export const registerUser = async (formData) => {
   const { email, password, firstName, lastName, phone, username } = formData;
 
   try {
-    // Create user in Firebase Auth
+
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
@@ -42,10 +39,8 @@ export const registerUser = async (formData) => {
       createdAt: new Date().toISOString(),
     };
 
-    // Store user data in Firestore
     await setDoc(doc(db, 'users', user.uid), userData);
 
-    // Save user in localStorage
     localStorage.setItem('user', JSON.stringify(userData));
 
     return { success: true, user: userData };
@@ -55,17 +50,12 @@ export const registerUser = async (formData) => {
   }
 };
 
-/**
- * Login user with email/phone/username and password
- */
 export const loginUser = async (identifier, password) => {
   try {
     let emailToUse = identifier;
 
-    // If not a valid email format, search for username or phone
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(identifier)) {
-      // Search Firestore for matching username or phone
       const usersRef = collection(db, 'users');
 
       const qUsername = query(usersRef, where('username', '==', identifier));
@@ -90,7 +80,6 @@ export const loginUser = async (identifier, password) => {
       emailToUse = userDoc.data().email;
     }
 
-    // Sign in using resolved email
     const userCredential = await signInWithEmailAndPassword(auth, emailToUse, password);
     const user = userCredential.user;
 
@@ -100,7 +89,6 @@ export const loginUser = async (identifier, password) => {
     if (docSnap.exists()) {
       const userData = docSnap.data();
 
-      // Save user in localStorage
       localStorage.setItem('user', JSON.stringify(userData));
 
       return { success: true, user: userData };
@@ -113,9 +101,6 @@ export const loginUser = async (identifier, password) => {
   }
 };
 
-/**
- * Get current user data from Firestore
- */
 export const getUserData = async (uid) => {
   try {
     const docRef = doc(db, 'users', uid);
@@ -132,9 +117,6 @@ export const getUserData = async (uid) => {
   }
 };
 
-/**
- * Logout user from Firebase Auth and clear localStorage
- */
 export const logoutUser = async () => {
   try {
     await signOut(auth);

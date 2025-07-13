@@ -1,7 +1,3 @@
-// src/components/alerts/SuccessMessage.jsx
-
-import React from 'react';
-
 const SuccessMessage = ({ message, type = 'success' }) => {
   const bgColor = type === 'success' ? 'bg-green-100' : 'bg-red-100';
   const textColor = type === 'success' ? 'text-green-700' : 'text-red-700';

@@ -1,70 +1,54 @@
-import { 
-  BsSpeedometer2, 
-  BsGraphUp, 
-  BsClipboardData, 
-  BsGear,
-  BsPeople,
-  BsBox,
-  BsCreditCard,
-  BsBell
-} from 'react-icons/bs';
+import {
+  BsHouseDoor,
+  BsPerson,
+  BsHeart,
+  BsCalendar,
+  BsChatDots,
+  BsCompass
+} from 'react-icons/bs'; 
 
 const iconListData = [
   {
     id: 1,
-    label: 'Dashboard',
-    icon: BsSpeedometer2,
+    label: 'Home',
+    icon: BsHouseDoor,
     color: 'black',
-    path: '/dashboard'
-  },
-  {
-    id: 2,
-    label: 'Analytics',
-    icon: BsGraphUp,
-    color: 'black',
-    path: '/analytics'
-  },
-  {
-    id: 3,
-    label: 'Reports',
-    icon: BsClipboardData,
-    color: 'black',
-    path: '/reports'
-  },
-  {
-    id: 4,
-    label: 'Settings',
-    icon: BsGear,
-    color: 'black',
-    path: '/settings'
-  },
-  {
-    id: 5,
-    label: 'Users',
-    icon: BsPeople,
-    color: 'black',
-    path: '/users'
+    path: '/home'
   },
   {
     id: 6,
-    label: 'Products',
-    icon: BsBox,
+    label: 'Explore Skills',
+    icon: BsCompass,
     color: 'black',
-    path: '/products'
+    path: '/explore'
   },
   {
-    id: 7,
-    label: 'Billing',
-    icon: BsCreditCard,
+    id: 2,
+    label: 'Profile',
+    icon: BsPerson,
     color: 'black',
-    path: '/billing'
+    path: '/profile'
   },
   {
-    id: 8,
-    label: 'Notifications',
-    icon: BsBell,
+    id: 3,
+    label: 'My Match',
+    icon: BsHeart,
     color: 'black',
-    path: '/notifications'
+    path: '/match'
+  },
+  {
+    id: 4,
+    label: 'Calendar',
+    icon: BsCalendar,
+    color: 'black',
+    path: '/calendar'
+  },
+  {
+    id: 5,
+    label: 'Inbox',
+    icon: BsChatDots,
+    color: 'black',
+    path: '/message'
   }
 ];
 

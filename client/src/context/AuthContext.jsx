@@ -1,4 +1,3 @@
-// context/AuthContext.jsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getUserData } from '../firebase/authFirebaseOperations';
@@ -13,8 +12,6 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const auth = getAuth();
-
-    // Watch Firebase auth state
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         const result = await getUserData(firebaseUser.uid);
@@ -38,7 +35,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
-    localStorage.clear(); // optional: or just remove specific items
+    localStorage.clear(); 
   };
 
   return (
