@@ -1,9 +1,13 @@
 import React, { useRef, useEffect } from 'react';
 import ColorIconButton from '../buttons/ColorIconButton';
 import { BsXLg, BsPin, BsPinFill } from 'react-icons/bs';
+import { useAuth } from '../../context/AuthContext';
+import Inbox from '../messageComponents/Inbox'; // adjust the path based on your structure
 
-const RightSidebar = ({ isOpen, isPinned, onClose, onTogglePin, children }) => {
+const RightSidebar = ({ isOpen, isPinned, onClose, onTogglePin }) => {
   const sidebarRef = useRef(null);
+  const { user } = useAuth();
+
   useEffect(() => {
     if (!isPinned && isOpen) {
       const handleClickOutside = (event) => {
@@ -51,8 +55,15 @@ const RightSidebar = ({ isOpen, isPinned, onClose, onTogglePin, children }) => {
           />
         </div>
       </div>
+
       <div className="p-4 h-[calc(100vh-57px)] overflow-y-auto">
-        {children}
+        {user ? (
+          <Inbox />
+        ) : (
+          <div className="text-center text-gray-500 mt-10">
+            <p className="text-lg font-medium">Please log in to start chatting with someone.</p>
+          </div>
+        )}
       </div>
     </div>
   );

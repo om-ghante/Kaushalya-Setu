@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
 
 import Dashboard from './pages/Dashboard';
+import Register from './pages/auth/Register';
 import DeviceWarningPopup from './pages/DeviceWarningPopup';
 
 function App() {
@@ -24,10 +26,20 @@ function App() {
     }, []);
 
   return (
-    <>
-    <Dashboard />
-    <DeviceWarningPopup />
-    </>
+    <BrowserRouter>
+      <Routes>
+        {/* Homepage / Main Dashboard */}
+        <Route path="/" element={<Dashboard />} />
+
+        {/* Register Page */}
+        <Route path="/register" element={<Register />} />
+
+        {/* Add more routes here if needed */}
+      </Routes>
+
+      {/* Always show the device warning popup */}
+      <DeviceWarningPopup />
+    </BrowserRouter>
   );
 }
 

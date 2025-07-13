@@ -16,7 +16,7 @@ const PopupModal = ({ title, onClose, children }) => {
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
       <div 
         ref={modalRef}
         className="bg-white rounded-lg shadow-sm w-full max-w-4xl mx-4 max-h-[90vh] overflow-hidden flex flex-col"
