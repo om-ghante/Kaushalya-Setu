@@ -1,12 +1,6 @@
 import { useAuth } from '../context/AuthContext';
 import { logoutUser } from '../firebase/authFirebaseOperations';
 
-const getInitials = (firstName, lastName) => {
-  const first = firstName?.charAt(0)?.toUpperCase() || '';
-  const last = lastName?.charAt(0)?.toUpperCase() || '';
-  return `${first}${last}`;
-};
-
 const Profile = () => {
   const { user, logout } = useAuth();
 
@@ -30,12 +24,12 @@ const Profile = () => {
           />
         ) : (
           <div className="w-16 h-16 bg-gray-300 text-white flex items-center justify-center rounded-full font-semibold text-lg mr-4">
-            {getInitials(user.firstName, user.lastName)}
+            {user.displayName}
           </div>
         )}
 
         <div>
-          <h3 className="font-bold text-md">{user.firstName} {user.lastName}</h3>
+          <h3 className="font-bold text-md">{user.displayName}</h3>
           <p className="text-sm text-gray-500">{user.email}</p>
         </div>
       </div>

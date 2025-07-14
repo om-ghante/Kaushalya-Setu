@@ -11,32 +11,37 @@ export const signInWithGoogle = async () => {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
-    const displayName = user.displayName || '';
-    const [firstName = '', lastName = ''] = displayName.split(' ');
+    const displayName = user.displayName || "";
+    const email = user.email || "";
+    const phone = user.phoneNumber || "";
+    const username = email ? email.split("@")[0] : "";
+    const photoURL = user.photoURL || "";
 
     const userData = {
       uid: user.uid,
-      firstName,
-      lastName,
-      email: user.email || '',
-      phone: user.phoneNumber || '',
-      username: user.email?.split('@')[0] || '',
-      photoURL: user.photoURL || '',
+      displayName,
+      email,
+      phone,
+      username,
+      photoURL,
       createdAt: new Date().toISOString(),
     };
 
-    const userRef = doc(db, 'users', user.uid);
+    const userRef = doc(db, "users", user.uid);
     const userSnap = await getDoc(userRef);
 
     if (!userSnap.exists()) {
       await setDoc(userRef, userData);
     }
 
+    localStorage.setItem("user", JSON.stringify(userData));
+
     return {
       success: true,
       user: userData,
     };
   } catch (error) {
+    console.error("Google Sign-In Error:", error);
     return {
       success: false,
       error: error.message,

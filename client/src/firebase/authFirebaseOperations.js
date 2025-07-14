@@ -2,7 +2,7 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signOut
+  signOut,
 } from 'firebase/auth';
 
 import {
@@ -13,26 +13,28 @@ import {
   collection,
   query,
   where,
-  getDocs
+  getDocs,
 } from 'firebase/firestore';
 
-import { app } from './config'; 
+import { app } from './config';
 
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+/**
+ * Register a new user
+ * @param {Object} formData - User data including email, password, displayName, phone, and username
+ */
 export const registerUser = async (formData) => {
-  const { email, password, firstName, lastName, phone, username } = formData;
+  const { email, password, displayName, phone, username } = formData;
 
   try {
-
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
     const userData = {
       uid: user.uid,
-      firstName,
-      lastName,
+      displayName,
       email,
       phone,
       username,
@@ -63,7 +65,7 @@ export const loginUser = async (identifier, password) => {
 
       const [usernameSnap, phoneSnap] = await Promise.all([
         getDocs(qUsername),
-        getDocs(qPhone)
+        getDocs(qPhone),
       ]);
 
       let userDoc = null;

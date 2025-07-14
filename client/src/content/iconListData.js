@@ -48,7 +48,7 @@ const iconListData = [
     label: 'Inbox',
     icon: BsChatDots,
     color: 'black',
-    path: '/message'
+    path: '/inbox'
   }
 ];
 

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
 import IconButton from '../components/buttons/IconButton';
 import ColorIconButton from '../components/buttons/ColorIconButton';
 import IconTextButton from '../components/buttons/IconTextButton';
@@ -6,24 +7,33 @@ import TextButton from '../components/buttons/TextButton';
 import MenuIconList from '../components/list/MenuIconList';
 import PopupModal from '../components/popups/PopupModal';
 import RightSidebar from '../components/sidebars/RightSidebar';
-import Profile from './Profile';
 import HowItWorksPopup from './HowItWorksPopup';
 import AboutSoftwarePopup from './AboutSoftwarePopup';
 import Login from './auth/Login';
 import Register from './auth/Register';
 import ForgotPassword from './auth/ForgotPassword';
-import PostList from '../components/list/PostList';
-import MyMatch from '../components/userComponents/MyMatch';
-import Calendar from '../components/userComponents/Calendar';
 import CreatePostPopup from './CreatePostPopup';
-import { BsInfoCircle, BsGear, BsChatDots, BsX, BsBell, BsPlusCircle, BsSearch } from 'react-icons/bs';
+import { 
+  BsInfoCircle, 
+  BsGear, 
+  BsChatDots, 
+  BsX, 
+  BsBell, 
+  BsPlusCircle, 
+  BsSearch,
+  BsHouseDoor,
+  BsPerson,
+  BsHeart,
+  BsCompass
+} from 'react-icons/bs';
 import { CgMenuGridO } from 'react-icons/cg';
-import iconListData from '../content/iconListData';
 import { useAuth } from '../context/AuthContext';
+import iconListData from '../content/iconListData';
 
 const Dashboard = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [columns, setColumns] = useState(1);
+  const navigate = useNavigate();
   const [isHowItWorksOpen, setIsHowItWorksOpen] = useState(false);
   const [isAboutSoftwareOpen, setIsAboutSoftwareOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -87,7 +97,7 @@ const Dashboard = () => {
   const menuItems = iconListData.map(item => ({
     ...item,
     onClick: () => {
-      alert(`Navigating to ${item.path}`);
+      navigate(`${item.path}`)
       setIsMenuOpen(false);
     }
   }));
@@ -243,28 +253,7 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <div className={`pt-24 px-8 pb-16 transition-all duration-300 ${isSidebarPinned ? 'pr-[25%]' : ''}`}>
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-            <div className="lg:col-span-3 space-y-6">
-              {user && <Profile user={user} onLogout={logout} />}
-            </div>
-            <div className="lg:col-span-6 space-y-6">
-              <PostList />
-            </div>
-            <div className="lg:col-span-3 space-y-6">
-              <MyMatch />
-              <Calendar />
-              <div>
-                  <p className="text-center text-md text-gray-500 mt-8">
-                    Made By Om Ghante with Passion
-                  </p>
-                  <p className="text-center text-sm text-gray-500">
-                    Kaushalya Setu © 2025
-                  </p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <Outlet />
       </div>
 
       {/* Sidebars and Popups */}

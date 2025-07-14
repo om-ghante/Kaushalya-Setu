@@ -7,7 +7,7 @@ import Error from '../../components/notificationalerts/Error';
 import { registerUser } from '../../firebase/authFirebaseOperations';
 import { signInWithGoogle } from '../../firebase/googleAuthOperations';
 import { useAuth } from '../../context/AuthContext';
-import GoogleLogo from '../../assets/GoogleLogo.png'
+import GoogleLogo from '../../assets/GoogleLogo.png';
 
 const Register = ({ onLogin, onClose }) => {
   const [step, setStep] = useState(1);
@@ -18,7 +18,7 @@ const Register = ({ onLogin, onClose }) => {
     phone: '',
     username: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
   });
 
   const [successMsg, setSuccessMsg] = useState('');
@@ -48,8 +48,16 @@ const Register = ({ onLogin, onClose }) => {
       setErrorMsg('Passwords do not match!');
       return;
     }
+    const displayName = `${formData.firstName} ${formData.lastName}`.trim();
 
-    const result = await registerUser(formData);
+    const { firstName, lastName, confirmPassword, ...rest } = formData;
+
+    const dataToSend = {
+      ...rest,
+      displayName,
+    };
+
+    const result = await registerUser(dataToSend);
 
     if (result.success) {
       login(result.user);
